@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Messaging</title>
+</head>
+<body>
+    <ul id="messages"></ul>
+    <form id="form" action="">
+        <input type="text" id="input" autocomplete="off"/>
+        <button>Send</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io()
+        const messages = document.getElementById('messages')
+        const input = document.getElementById('input')
+        const form = document.getElementById('form')
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault()
+            if(input.value){
+                socket.emit('sent', input.value)
+                input.value = '';
+            }
+        })
+
+        socket.on('recieved', function(text) {
+            const messageBar = document.createElement('li')
+            messageBar.textContent = text;
+            messages.appendChild(messageBar)
+            window.scrollTo(0, document.body.scrollHeight);
+        })
+    </script>
+</body>
+</html>
